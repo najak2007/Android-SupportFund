@@ -217,7 +217,7 @@
     border-radius: var(--radius);
     padding: 18px 16px;
     display: flex; flex-direction: column; gap: 12px;
-    margin-top: 16px; margin-bottom: 40px;
+    margin-top: 16px; margin-bottom: 20px;
     box-shadow: var(--shadow);
   }
   .contact-row {
@@ -369,6 +369,49 @@
   /* ── SAFE AREA ── */
   .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
 
+  /* ── 지역별 금액 레이아웃 ── */
+  .amt-header {
+    display: flex; align-items: center;
+    padding: 7px 12px;
+    background: var(--blue-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  }
+  .amt-region-col { flex: 0 0 42%; }
+  .amt-cols {
+    flex: 1; display: flex; gap: 4px;
+  }
+  .amt-header .amt-cols span {
+    flex: 1; text-align: center;
+    font-size: 11px; font-weight: 700; color: var(--blue-dark);
+    word-break: keep-all; line-height: 1.3;
+  }
+  .amt-row {
+    display: flex; align-items: center;
+    padding: 10px 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-top: none;
+  }
+  .amt-row:last-of-type {
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  }
+  .amt-label {
+    flex: 0 0 42%; padding-right: 6px;
+    font-size: 13px; display: flex; flex-direction: column; gap: 2px;
+  }
+  .amt-sub {
+    font-size: 11px; color: var(--text-3);
+  }
+  .amt-row .amt-cols {
+    flex: 1; display: flex; gap: 4px;
+  }
+  .amt-row .amt-cols .badge {
+    flex: 1; text-align: center;
+    padding: 4px 2px; font-size: 12px;
+    white-space: nowrap;
+  }
+
   /* ── 가맹점 조회 ── */
   .merchant-group-label {
     font-size: 12px; font-weight: 700; color: var(--text-3);
@@ -386,7 +429,7 @@
     background: var(--card); border: 1px solid var(--border);
     border-radius: var(--radius-sm); text-decoration: none;
     position: relative; transition: all .15s;
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow); cursor: pointer;
   }
   .merchant-card:active { transform: scale(.96); background: var(--blue-bg); border-color: #b8d5f5; }
   .merchant-logo {
@@ -447,10 +490,16 @@
     border-radius: 20px; padding: 2px 9px; font-size: 11px; font-weight: 700;
     border: 1px solid var(--green-border); white-space: nowrap;
   }
-  .yoil-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 14px; }
+  .yoil-scroll-wrap {
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    margin-bottom: 14px; scrollbar-width: none; -ms-overflow-style: none;
+  }
+  .yoil-scroll-wrap::-webkit-scrollbar { display: none; }
+  .yoil-grid { display: flex; gap: 8px; width: max-content; padding-bottom: 2px; }
   .yoil-day {
-    background: var(--card); border-radius: 8px; padding: 8px 4px;
-    text-align: center; border: 1.5px solid #b8d5f5; transition: all .15s;
+    flex: 0 0 72px;
+    background: var(--card); border-radius: 10px; padding: 10px 6px;
+    text-align: center; border: 1.5px solid #b8d5f5; transition: all .2s;
   }
   .yoil-day.today { background: var(--blue-dark); border-color: var(--blue-dark); }
   .yoil-day.past { opacity: .45; }
@@ -630,46 +679,46 @@
     <!-- 카드사 그룹 -->
     <p class="merchant-group-label"><i class="ti ti-credit-card"></i> 카드사별 조회</p>
     <div class="merchant-grid">
-      <a class="merchant-card" href="https://go.bccard.com/" target="_blank" rel="noopener">
+      <div class="merchant-card" onclick="openCard('bc')">
         <div class="merchant-logo bc">BC</div>
         <div class="merchant-name">BC카드</div>
         <i class="ti ti-external-link merchant-ext"></i>
-      </a>
-      <a class="merchant-card" href="https://m.kbcard.com/BON/DVIEW/MBHV1103" target="_blank" rel="noopener">
+      </div>
+      <div class="merchant-card" onclick="openCard('kb')">
         <div class="merchant-logo kb">KB</div>
         <div class="merchant-name">KB국민카드</div>
         <i class="ti ti-external-link merchant-ext"></i>
-      </a>
-      <a class="merchant-card" href="https://www.shinhancard.com/pconts/html/myPage/governmentSupport/MOBFM591N/MOBFM591R03.html" target="_blank" rel="noopener">
+      </div>
+      <div class="merchant-card" onclick="openCard('shinhan')">
         <div class="merchant-logo shinhan">신한</div>
         <div class="merchant-name">신한카드</div>
         <i class="ti ti-external-link merchant-ext"></i>
-      </a>
-      <a class="merchant-card" href="https://m.hanacard.co.kr/MKGAAV9320M.web" target="_blank" rel="noopener">
+      </div>
+      <div class="merchant-card" onclick="openCard('hana')">
         <div class="merchant-logo hana">하나</div>
         <div class="merchant-name">하나카드</div>
         <i class="ti ti-external-link merchant-ext"></i>
-      </a>
-      <a class="merchant-card" href="https://m.wooricard.com/dcmw/yh1/mcd/mcd04/fcstistlfee/M1MCD204S70.do" target="_blank" rel="noopener">
+      </div>
+      <div class="merchant-card" onclick="openCard('woori')">
         <div class="merchant-logo woori">우리</div>
         <div class="merchant-name">우리카드</div>
         <i class="ti ti-external-link merchant-ext"></i>
-      </a>
-      <a class="merchant-card" href="https://www.nhcard.com" target="_blank" rel="noopener">
+      </div>
+      <div class="merchant-card" onclick="openCard('nh')">
         <div class="merchant-logo nh">NH</div>
         <div class="merchant-name">NH농협카드</div>
         <i class="ti ti-external-link merchant-ext"></i>
-      </a>
-      <a class="merchant-card" href="https://www.samsungcard.com" target="_blank" rel="noopener">
+      </div>
+      <div class="merchant-card" onclick="openCard('samsung')">
         <div class="merchant-logo samsung">삼성</div>
         <div class="merchant-name">삼성카드</div>
         <i class="ti ti-external-link merchant-ext"></i>
-      </a>
-      <a class="merchant-card" href="https://www.hyundaicard.com" target="_blank" rel="noopener">
+      </div>
+      <div class="merchant-card" onclick="openCard('hyundai')">
         <div class="merchant-logo hyundai">현대</div>
         <div class="merchant-name">현대카드</div>
         <i class="ti ti-external-link merchant-ext"></i>
-      </a>
+      </div>
     </div>
 
     <!-- 지역사랑상품권 그룹 -->
@@ -680,17 +729,17 @@
         <div class="merchant-name">제로페이</div>
         <i class="ti ti-external-link merchant-ext"></i>
       </a>
-      <a class="merchant-card" href="https://www.dongbaekjeon.kr" target="_blank" rel="noopener">
+      <a class="merchant-card" href="https://busandong100.kr/" target="_blank" rel="noopener">
         <div class="merchant-logo dongbaek">동백</div>
         <div class="merchant-name">동백전(부산)</div>
         <i class="ti ti-external-link merchant-ext"></i>
       </a>
-      <a class="merchant-card" href="https://www.incheoneum.kr" target="_blank" rel="noopener">
+      <a class="merchant-card" href="https://incheoneum.or.kr/" target="_blank" rel="noopener">
         <div class="merchant-logo incheon">이음</div>
         <div class="merchant-name">인천이음</div>
         <i class="ti ti-external-link merchant-ext"></i>
       </a>
-      <a class="merchant-card" href="https://www.gyeonggipay.kr" target="_blank" rel="noopener">
+      <a class="merchant-card" href="https://gmoney.or.kr/base/main/view" target="_blank" rel="noopener">
         <div class="merchant-logo gyeonggi">경기</div>
         <div class="merchant-name">경기지역화폐</div>
         <i class="ti ti-external-link merchant-ext"></i>
@@ -699,7 +748,7 @@
 
     <!-- 통합 조회 -->
     <p class="merchant-group-label" style="margin-top:18px"><i class="ti ti-building-government"></i> 통합 조회</p>
-    <a class="merchant-banner" href="https://www.gov.kr/portal/rcvfvrInfo/20000000052" target="_blank" rel="noopener">
+    <a class="merchant-banner" href="https://www.gov.kr/portal/rcvfvrSvc/svcFind/simpleFindStepOne" target="_blank" rel="noopener">
       <div>
         <div class="merchant-banner-title">정부24 — 보조금24 가맹점 조회</div>
         <div class="merchant-banner-sub">전국 가맹점 통합 검색 · 거주지 기준 주변 매장 확인</div>
@@ -718,35 +767,67 @@
   <!-- 지역별 금액 -->
   <div class="section">
     <div class="section-title"><i class="ti ti-map-pin"></i>지역별 지급 금액 (2차)</div>
-    <div class="tbl-wrap">
-      <table>
-        <thead>
-          <tr><th>지역 구분</th><th>일반</th><th>한부모·차상위</th><th>기초수급자</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><strong>수도권</strong></td><td><span class="badge">10만</span></td><td><span class="badge">45만</span></td><td><span class="badge">55만</span></td></tr>
-          <tr><td><strong>비수도권</strong></td><td><span class="badge">15만</span></td><td><span class="badge">50만</span></td><td><span class="badge">60만</span></td></tr>
-          <tr>
-            <td>
-              <button class="modal-link" onclick="openModal('modal-ude')">
-                <i class="ti ti-external-link" style="font-size:12px;vertical-align:-1px"></i> 인구감소 우대지역
-              </button>
-              <span style="display:block;font-size:11px;color:var(--text-3);margin-top:2px">49개 시·군·구</span>
-            </td>
-            <td><span class="badge">20만</span></td><td><span class="badge">50만</span></td><td><span class="badge">60만</span></td>
-          </tr>
-          <tr>
-            <td>
-              <button class="modal-link-special" onclick="openModal('modal-special')">
-                <i class="ti ti-external-link" style="font-size:12px;vertical-align:-1px"></i> 인구감소 특별지역
-              </button>
-              <span style="display:block;font-size:11px;color:var(--text-3);margin-top:2px">40개 시·군</span>
-            </td>
-            <td><span class="badge">25만</span></td><td><span class="badge">50만</span></td><td><span class="badge">60만</span></td>
-          </tr>
-        </tbody>
-      </table>
+
+    <!-- 헤더 라벨 -->
+    <div class="amt-header">
+      <div class="amt-region-col"></div>
+      <div class="amt-cols">
+        <span>일반</span>
+        <span>한부모·차상위</span>
+        <span>기초수급자</span>
+      </div>
     </div>
+
+    <!-- 수도권 -->
+    <div class="amt-row">
+      <div class="amt-label"><strong>수도권</strong></div>
+      <div class="amt-cols">
+        <span class="badge">10만 원</span>
+        <span class="badge">45만 원</span>
+        <span class="badge">55만 원</span>
+      </div>
+    </div>
+
+    <!-- 비수도권 -->
+    <div class="amt-row">
+      <div class="amt-label"><strong>비수도권</strong></div>
+      <div class="amt-cols">
+        <span class="badge">15만 원</span>
+        <span class="badge">50만 원</span>
+        <span class="badge">60만 원</span>
+      </div>
+    </div>
+
+    <!-- 우대지역 -->
+    <div class="amt-row">
+      <div class="amt-label">
+              <button class="modal-link" onclick="openModal('modal-ude')">
+          <i class="ti ti-external-link" style="font-size:11px;vertical-align:-1px"></i> 인구감소 우대지역
+              </button>
+        <span class="amt-sub">49개 시·군·구</span>
+      </div>
+      <div class="amt-cols">
+        <span class="badge">20만 원</span>
+        <span class="badge">50만 원</span>
+        <span class="badge">60만 원</span>
+      </div>
+    </div>
+
+    <!-- 특별지역 -->
+    <div class="amt-row" style="border-bottom:none">
+      <div class="amt-label">
+        <button class="modal-link" onclick="openModal('modal-special')">
+          <i class="ti ti-external-link" style="font-size:11px;vertical-align:-1px"></i> 인구감소 특별지역
+              </button>
+        <span class="amt-sub">40개 시·군</span>
+      </div>
+      <div class="amt-cols">
+        <span class="badge">25만 원</span>
+        <span class="badge">50만 원</span>
+        <span class="badge">60만 원</span>
+      </div>
+    </div>
+
     <div class="alert alert-amber" style="margin-top:10px">
       <i class="ti ti-info-circle"></i>
       <p>1차·2차 지원금 사용 기한은 <strong>2026년 8월 31일</strong>까지이며, 미사용 지원금은 소멸됩니다.</p>
@@ -808,6 +889,7 @@
     <span>첫 주 출생연도 끝자리 요일제 <span class="yoil-period">(5.18 ~ 5.22)</span></span>
     <span class="yoil-free">5.23부터 자유 신청</span>
   </div>
+  <div class="yoil-scroll-wrap" id="yoilScrollWrap">
   <div class="yoil-grid">
     <div class="yoil-day" id="yoil-0">
       <div class="yoil-label">월 <span class="yoil-date-sm">5.18</span></div>
@@ -829,6 +911,7 @@
       <div class="yoil-label">금 <span class="yoil-date-sm">5.22</span></div>
       <div class="yoil-digits"><span class="yoil-num">5</span><span class="yoil-num">0</span></div>
     </div>
+  </div>
   </div>
   <!-- 내 신청일 계산기 -->
   <div class="yoil-calc">
@@ -890,7 +973,7 @@
             <div class="contact-num">정부24 <i class="ti ti-chevron-right contact-arrow"></i></div>
           </div>
         </a>
-        <a class="contact-item contact-call" href="https://www.gongibi.go.kr" target="_blank" rel="noopener">
+        <a class="contact-item contact-call" href="https://www.ips.go.kr/pot/forwardMain.do" target="_blank" rel="noopener">
           <i class="ti ti-robot"></i>
           <div>
             <div class="contact-label">대상 여부 사전 안내</div>
@@ -898,6 +981,8 @@
           </div>
         </a>
       </div>
+      <!-- 구분선 -->
+      <div style="height:0px;background:rgba(255,255,255,0.15);margin:0 4px"></div>
     </div>
   </div>
 
@@ -1031,8 +1116,20 @@ function calcYoil(){
     res.innerHTML='✅ <strong>'+year+'년생</strong>은 요일 제한 없이 지금 바로 신청 가능합니다.<br><span style="font-size:12px">요일제 기간(5.18~5.22)이 종료되었습니다.</span>';
     res.style.display='block'; return;
   }
+  // 하이라이트 카드로 스크롤
   var el=document.getElementById('yoil-'+info.idx);
   if(el) el.classList.add('highlight');
+  // 스크롤 래퍼에서 해당 카드가 보이도록 가로 스크롤
+  setTimeout(function(){
+    var wrap=document.getElementById('yoilScrollWrap');
+    var card=document.getElementById('yoil-'+info.idx);
+    if(wrap && card){
+      var cardLeft = card.offsetLeft;
+      var cardWidth = card.offsetWidth;
+      var wrapWidth = wrap.offsetWidth;
+      wrap.scrollTo({ left: cardLeft - (wrapWidth/2) + (cardWidth/2), behavior:'smooth' });
+    }
+  }, 80);
   var todayIdx=(y===2026&&m===5&&d>=18&&d<=22)?d-18:-1;
   var isToday=(todayIdx===info.idx);
   var html='';
@@ -1055,7 +1152,126 @@ function calcYoil(){
   setTimeout(function(){ res.scrollIntoView({behavior:'smooth',block:'nearest'}); },100);
 }
 
-document.getElementById('birthYearInput').addEventListener('keydown',function(e){ if(e.key==='Enter') calcYoil(); });
+// ── 카드사 딥링크 ──
+// iOS: URL Scheme으로 앱 호출 → 미설치시 타임아웃 후 웹 폴백
+// Android: intent:// URL로 앱 호출 → 미설치시 Play Store 또는 웹 폴백
+var CARD_INFO = {
+  bc: {
+    name: 'BC카드',
+    ios_scheme: 'bccard://',
+    android_intent: 'intent://main#Intent;scheme=bccard;package=kr.co.bccard.mobileapp;end',
+    web: 'https://m.bccard.com/',
+    appstore: 'https://apps.apple.com/kr/app/id398379463',
+    playstore: 'https://play.google.com/store/apps/details?id=kr.co.bccard.mobileapp'
+  },
+  kb: {
+    name: 'KB국민카드',
+    ios_scheme: 'kbpay-kbkookmincard://',
+    android_intent: 'intent://main#Intent;scheme=kbcard;package=com.kbcard.cxh.appcard;end',
+    web: 'https://m.kbcard.com/BON/DVIEW/MBHV1103',
+    appstore: 'https://apps.apple.com/kr/app/id391798128',
+    playstore: 'https://play.google.com/store/apps/details?id=com.kbcard.cxh.appcard'
+  },
+  shinhan: {
+    name: '신한카드',
+    ios_scheme: 'shc-ansimclick://',
+    android_intent: 'intent://main#Intent;scheme=shinhancard;package=com.shinhancard.smartshinhan;end',
+    web: 'https://www.shinhancard.com',
+    appstore: 'https://apps.apple.com/kr/app/id357125252',
+    playstore: 'https://play.google.com/store/apps/details?id=com.shinhancard.smartshinhan'
+  },
+  hana: {
+    name: '하나카드',
+    ios_scheme: 'cloudpay://',
+    android_intent: 'intent://main#Intent;scheme=cloudpay;package=com.hanaskcard.paycla;end',
+    web: 'https://m.hanacard.co.kr',
+    appstore: 'https://apps.apple.com/kr/app/id694498013',
+    playstore: 'https://play.google.com/store/apps/details?id=com.hanaskcard.paycla'
+  },
+  woori: {
+    name: '우리카드',
+    ios_scheme: 'com.wooricard.wcard://',
+    android_intent: 'intent://main#Intent;scheme=com.wooricard.wcard;package=com.wooricard.smartapp;end',
+    web: 'https://m.wooricard.com',
+    appstore: 'https://apps.apple.com/kr/app/id1470727173',
+    playstore: 'https://play.google.com/store/apps/details?id=com.wooricard.smartapp'
+  },
+  nh: {
+    name: 'NH농협카드',
+    ios_scheme: 'nhallonepayansimclick://',
+    android_intent: 'intent://main#Intent;scheme=nhallonepayansimclick;package=nh.smart.nhallonepay;end',
+    web: 'https://card.nonghyup.com',
+    appstore: 'https://apps.apple.com/kr/app/id1417970812',
+    playstore: 'https://play.google.com/store/apps/details?id=nh.smart.nhallonepay'
+  },
+  samsung: {
+    name: '삼성카드',
+    ios_scheme: 'monimopay://',
+    android_intent: 'intent://main#Intent;scheme=monimopay;package=kr.co.samsungcard.mpocket;end',
+    web: 'https://www.samsungcard.com',
+    appstore: 'https://apps.apple.com/kr/app/id639507786',
+    playstore: 'https://play.google.com/store/apps/details?id=kr.co.samsungcard.mpocket'
+  },
+  hyundai: {
+    name: '현대카드',
+    ios_scheme: 'hdcardappcardansimclick://',
+    android_intent: 'intent://main#Intent;scheme=hdcardappcardansimclick;package=com.hyundaicard.appcard;end',
+    web: 'https://www.hyundaicard.com',
+    appstore: 'https://apps.apple.com/kr/app/id702653088',
+    playstore: 'https://play.google.com/store/apps/details?id=com.hyundaicard.appcard'
+  }
+};
+
+function openCard(id) {
+  var info = CARD_INFO[id];
+  if (!info) return;
+
+  var ua = navigator.userAgent || '';
+  var isIOS = /iPhone|iPad|iPod/i.test(ua);
+  var isAndroid = /Android/i.test(ua);
+
+  if (isAndroid) {
+    // Android: intent URL 시도 → 미설치시 브라우저가 자동으로 Play Store 또는 fallback 처리
+    window.open(info.web, '_blank');
+
+  } else if (isIOS) {
+    // iOS: URL Scheme 시도 → 300ms 안에 앱 전환 없으면 웹으로 폴백
+    var appOpened = false;
+    var timer = setTimeout(function () {
+      if (!appOpened && !document.hidden) {
+        window.open(info.web, '_blank');
+      }
+    }, 1200);
+
+    document.addEventListener('visibilitychange', function handler() {
+      if (document.hidden) {
+        appOpened = true;
+        clearTimeout(timer);
+      }
+      document.removeEventListener('visibilitychange', handler);
+    });
+
+    window.location.href = info.ios_scheme;
+
+  } else {
+    // 데스크톱 등 그 외: 웹으로 바로 이동
+    window.open(info.web, '_blank');
+  }
+}
+
+function getPkg(id) {
+  var pkgs = {
+    bc: 'kr.co.bccard.mobileapp',
+    kb: 'com.kbcard.cxh.appcard',
+    shinhan: 'com.shinhancard.smartshinhan',
+    hana: 'com.hanaskcard.paycla',
+    woori: 'com.wooricard.smartapp',
+    nh: 'nh.smart.nhallonepay',
+    samsung: 'kr.co.samsungcard.mpocket',
+    hyundai: 'com.hyundaicard.appcard'
+  };
+  return pkgs[id] || '';
+}
 </script>
 </body>
 </html>
