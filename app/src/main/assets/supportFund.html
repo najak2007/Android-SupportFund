@@ -153,6 +153,8 @@
     background: none; border: none; padding: 0;
     font-family: inherit; font-size: inherit; text-align: left;
     touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(24,95,165,0.15);
+    -webkit-user-select: none; user-select: none;
   }
   .modal-link-special {
     color: var(--blue); text-decoration: underline;
@@ -161,6 +163,8 @@
     background: none; border: none; padding: 0;
     font-family: inherit; font-size: inherit; text-align: left;
     touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(24,95,165,0.15);
+    -webkit-user-select: none; user-select: none;
   }
 
   /* ── ALERT BOXES ── */
@@ -284,23 +288,45 @@
   .result-empty i { font-size: 30px; display: block; margin-bottom: 6px; opacity: .4; }
 
   /* ── MODALS ── */
+  /* Android WebView 완전 호환 최종판
+     - transform / transition / animation / visibility / opacity 일절 사용 안 함
+     - display:none <-> display:block 단순 토글
+     - modal-box는 position:absolute + bottom:0 으로 하단 고정
+     - max-height는 vh 대신 % + 보정값 사용                          */
   .modal-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,.55); z-index: 9999;
-    align-items: flex-end; justify-content: center;
-    padding: 0;
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 9999;
+    /* overflow hidden으로 modal-box가 overlay 밖으로 나가지 않도록 */
+    overflow: hidden;
   }
-  .modal-overlay.open { display: flex; }
+  .modal-overlay.open {
+    display: block;
+  }
   .modal-box {
-    background: var(--card);
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    /* vh 단위 Android 구버전 오작동 방지: height 제한은 JS로 보완 */
+    max-height: 82%;
+    background: #ffffff;
     border-radius: 20px 20px 0 0;
-    width: 100%; max-width: 640px;
-    max-height: 82vh;
-    display: flex; flex-direction: column;
-    box-shadow: 0 -4px 40px rgba(0,0,0,.18);
-    animation: slideUp .28s cubic-bezier(.32,1,.28,1);
+    overflow: hidden;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    box-shadow: 0 -4px 40px rgba(0, 0, 0, 0.18);
   }
-  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
   .modal-handle {
     width: 40px; height: 4px;
     background: var(--border);
@@ -572,7 +598,7 @@
     <div class="modal-handle"></div>
     <div class="modal-header">
       <div class="modal-title modal-title-blue"><i class="ti ti-map-2"></i>인구감소 우대지원지역</div>
-      <button class="modal-close" onclick="closeModal('modal-ude')"><i class="ti ti-x"></i></button>
+      <button type="button" class="modal-close" onclick="closeModal('modal-ude')"><i class="ti ti-x"></i></button>
     </div>
     <div class="modal-body">
       <div class="modal-desc-blue"><strong>1인당 20만 원 지급</strong> 대상 지역입니다. 비수도권 기본(15만 원)보다 <strong>5만 원 추가</strong> 지급됩니다.</div>
@@ -598,7 +624,7 @@
     <div class="modal-handle"></div>
     <div class="modal-header">
       <div class="modal-title modal-title-amber"><i class="ti ti-map-star"></i>인구감소 특별지원지역</div>
-      <button class="modal-close" onclick="closeModal('modal-special')"><i class="ti ti-x"></i></button>
+      <button type="button" class="modal-close" onclick="closeModal('modal-special')"><i class="ti ti-x"></i></button>
     </div>
     <div class="modal-body">
       <div class="modal-desc-amber"><strong>1인당 25만 원 지급</strong> 대상 지역입니다. 우대지원지역(20만 원)보다 <strong>5만 원 추가</strong> 지급됩니다.</div>
@@ -801,7 +827,7 @@
     <!-- 우대지역 -->
     <div class="amt-row">
       <div class="amt-label">
-              <button class="modal-link" onclick="openModal('modal-ude')">
+        <button type="button" class="modal-link" onclick="openModal('modal-ude')">
           <i class="ti ti-external-link" style="font-size:11px;vertical-align:-1px"></i> 인구감소 우대지역
               </button>
         <span class="amt-sub">49개 시·군·구</span>
@@ -816,7 +842,7 @@
     <!-- 특별지역 -->
     <div class="amt-row" style="border-bottom:none">
       <div class="amt-label">
-        <button class="modal-link" onclick="openModal('modal-special')">
+        <button type="button" class="modal-link" onclick="openModal('modal-special')">
           <i class="ti ti-external-link" style="font-size:11px;vertical-align:-1px"></i> 인구감소 특별지역
               </button>
         <span class="amt-sub">40개 시·군</span>
@@ -1045,24 +1071,64 @@ function runSearch(q){
 
 document.getElementById('bizSearchInput').addEventListener('input',function(){ runSearch(this.value); });
 
-function openModal(id){ document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
-function closeModal(id){ document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
+// ── 모달 열기/닫기 (Android WebView 완전 호환 최종판) ──
+// transform / transition / animation / visibility / opacity 일절 사용 안 함
+// display:none <-> display:block 단순 토글 + max-height를 px로 직접 지정
+function openModal(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
 
-document.querySelectorAll('.modal-overlay').forEach(function(o){
-  o.addEventListener('click',function(e){ if(e.target===o) closeModal(o.id); });
+  // max-height를 vh 대신 window.innerHeight 기준 px로 계산 (Android WebView vh 버그 방지)
+  var box = el.querySelector('.modal-box');
+  if (box) {
+    box.style.maxHeight = Math.floor(window.innerHeight * 0.82) + 'px';
+  }
+
+  el.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('open');
+  if (!document.querySelectorAll('.modal-overlay.open').length) {
+    document.body.style.overflow = '';
+  }
+}
+
+// 오버레이 바깥 탭/클릭 시 닫기 (Android touchend + click 이중 등록)
+document.querySelectorAll('.modal-overlay').forEach(function(o) {
+  var touchMoved = false;
+  o.addEventListener('touchstart', function(e) { touchMoved = false; }, { passive: true });
+  o.addEventListener('touchmove',  function(e) { touchMoved = true;  }, { passive: true });
+  o.addEventListener('touchend', function(e) {
+    if (!touchMoved && e.target === o) { closeModal(o.id); }
+  }, { passive: true });
+  o.addEventListener('click', function(e) {
+    if (e.target === o) closeModal(o.id);
+  });
 });
-document.addEventListener('keydown',function(e){
-  if(e.key==='Escape') document.querySelectorAll('.modal-overlay.open').forEach(function(m){ closeModal(m.id); });
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.open').forEach(function(m) { closeModal(m.id); });
+  }
 });
 
 // 모달 스와이프 닫기 (iOS/Android 터치)
-document.querySelectorAll('.modal-box').forEach(function(box){
-  var startY=0;
-  box.addEventListener('touchstart',function(e){ startY=e.touches[0].clientY; },{passive:true});
-  box.addEventListener('touchend',function(e){
-    var dy=e.changedTouches[0].clientY-startY;
-    if(dy>80){ var overlay=box.closest('.modal-overlay'); if(overlay) closeModal(overlay.id); }
-  },{passive:true});
+document.querySelectorAll('.modal-box').forEach(function(box) {
+  var startY = 0;
+  box.addEventListener('touchstart', function(e) {
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+  box.addEventListener('touchend', function(e) {
+    var dy = e.changedTouches[0].clientY - startY;
+    if (dy > 80) {
+      var overlay = box.closest('.modal-overlay');
+      if (overlay) closeModal(overlay.id);
+    }
+  }, { passive: true });
 });
 
 // ── 요일제 로직 ──
